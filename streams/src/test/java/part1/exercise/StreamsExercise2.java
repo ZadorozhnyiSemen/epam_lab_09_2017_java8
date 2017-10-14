@@ -6,12 +6,7 @@ import data.Person;
 import org.junit.Test;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.*;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -110,17 +105,87 @@ public class StreamsExercise2 {
         assertEquals(expected, result);
     }
 
+    /**
+     * Преобразовать список сотрудников в отображение [компания -> множество людей, начавших свою карьеру в этой компании].
+     *
+     * Пример.
+     *
+     * Входные данные:
+     * Employees = [
+     *    Employee_1 = {
+     *        Person = {"Alex", "Doe", 32},
+     *        JobHistory = [
+     *           {2, "dev", "epam"},
+     *           {3, "dev", "yandex"},
+     *           {1, "dev", "mail"},
+     *        ]
+     *    },
+     *    Employee_2 = {
+     *        Person = {"Adam", "Smith", 25},
+     *        JobHistory = [
+     *           {1, "QA", "yandex"},
+     *           {2, "QA", "mail"},
+     *        ]
+     *    },
+     *    Employee_3 = {
+     *        Person = {"John", "Galt", 27},
+     *        JobHistory = [
+     *           {1, "QA", "epam"},
+     *           {3, "dev", "epam"},
+     *        ]
+     *    }
+     * ]
+     *
+     * Выходные данные:
+     * Result = [
+     *    "epam" -> [
+     *       {"Alex", "Doe", 32},
+     *       {"John", "Galt", 27}
+     *    ],
+     *    "yandex" -> [
+     *       {"Adam", "Smith", 25}
+     *    ]
+     * ]
+     */
     @Test
     public void indexByFirstEmployer() {
-        Map<String, List<Person>> employeesIndex = null;// TODO
-        throw new UnsupportedOperationException();
+        Map<String, Set<Person>> result = null; // TODO
+
+
+        Map<String, Set<Person>> expected = new HashMap<>();
+        expected.put("epam", new HashSet<>(Arrays.asList(
+                new Person("John", "Galt", 20),
+                new Person("John", "White", 22),
+                new Person("John", "Galt", 23),
+                new Person("John", "White", 25),
+                new Person("John", "Galt", 26),
+                new Person("John", "White", 28),
+                new Person("John", "Galt", 29),
+                new Person("Bob", "White", 31)
+        )));
+        expected.put("yandex", new HashSet<>(Arrays.asList(
+                new Person("John", "Doe", 21),
+                new Person("John", "Doe", 24),
+                new Person("Bob", "Doe", 27),
+                new Person("John", "Doe", 30)
+        )));
+        assertEquals(expected, result);
     }
 
+    /**
+     * Преобразовать список сотрудников в отображение [компания -> сотрудник, суммарно проработавший в ней наибольшее время].
+     * Гарантируется, что такой сотрудник будет один.
+     */
     @Test
     public void greatestExperiencePerEmployer() {
-        Map<String, Person> employeesIndex = null;// TODO
+        Map<String, Person> result = null;// TODO
 
-        assertEquals(new Person("John", "White", 28), employeesIndex.get("epam"));
+        Map<String, Set<Person>> expected = new HashMap<>();
+        expected.put("epam", Collections.singleton(new Person("John", "White", 28)));
+        expected.put("google", Collections.singleton(new Person("John", "Galt", 29)));
+        expected.put("yandex", Collections.singleton(new Person("John", "Doe", 30)));
+        expected.put("abc", Collections.singleton(new Person("John", "Doe", 30)));
+        assertEquals(expected, result);
     }
 
 
@@ -170,16 +235,16 @@ public class StreamsExercise2 {
                     )),
             new Employee("John", "White", 28,
                     Collections.singletonList(
-                            new JobHistoryEntry(666, "BA", "epam")
+                            new JobHistoryEntry(8, "BA", "epam")
                     )),
             new Employee("John", "Galt", 29,
                     Arrays.asList(
                             new JobHistoryEntry(3, "dev", "epam"),
-                            new JobHistoryEntry(1, "dev", "google")
+                            new JobHistoryEntry(3, "dev", "google")
                     )),
             new Employee("John", "Doe", 30,
                     Arrays.asList(
-                            new JobHistoryEntry(4, "QA", "yandex"),
+                            new JobHistoryEntry(5, "QA", "yandex"),
                             new JobHistoryEntry(2, "QA", "epam"),
                             new JobHistoryEntry(5, "dev", "abc")
                     )),

@@ -12,7 +12,7 @@ public class Person implements Comparable<Person>, Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
-    }
+}
 
     // * фабричный метод, который заменяется лямбдой для конструктора
 //    public static Person createPerson(String firstName, String lastName, int age) {
@@ -23,7 +23,7 @@ public class Person implements Comparable<Person>, Serializable {
         return firstName;
     }
 
-    public String getLastName(Person this) {
+    public String getLastName() {
         return lastName;
     }
 
