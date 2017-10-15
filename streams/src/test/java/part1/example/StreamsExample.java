@@ -118,10 +118,13 @@ public class StreamsExample {
     private Map<String, Set<Person>> getPositionIndex(List<Employee> employees) {
         Stream<PersonPositionPair> personPositionPairStream = employees.stream().flatMap(StreamsExample::employeeToPairs);
 
+        // 3 РЕАЛИЗАЦИИ
+
         // Reduce with seed
         // у reduce 3 параметра тут: 1 - куда все складывается, 2 - как элементы добавляются в коллекцию
         // 3 параметр - это такая функция, которая может склеить две коллекции первого типа, нужно для того,
         // чтобы можно было распараллелить вычисления
+        // reduce - частный случай collect
         personPositionPairStream
                 .reduce(Collections.emptyMap(), StreamsExample::addToMap, StreamsExample::combineMaps);
 
@@ -138,9 +141,13 @@ public class StreamsExample {
 //                                set.addAll(entry.getValue());
 //                            }
 //                        });
+        // 1 парам - то, что будет key в мапе position, то есть по нему группируется
+        // 2 парам - маппер, который достает Person в паре и кладет в Set (маппит кучу персонов в сет), маппер делает pair->person, а результат кладет в set
         return personPositionPairStream.collect(
                 Collectors.groupingBy(PersonPositionPair::getPosition, mapping(PersonPositionPair::getPerson, toSet())));
 
+        // группирует по person (это будет ключ в мапе) и кладет с помощью toList() PersonPositionPair'ы в List, который будет value в мапе
+        // personPositionPairStream.collect(groupingBy(PersonPositionPair::getPerson, toList()))
     }
 
     private static Map<String, Set<Person>> combineMaps(Map<String, Set<Person>> u1, Map<String, Set<Person>> u2) {
@@ -229,10 +236,16 @@ public class StreamsExample {
 //                        PersonPositionDuration::getPosition,
 //                        Function.identity(),
 //                        (p1, p2) -> p1.getDuration() > p2.getDuration() ? p1 : p2));
+
+//        Collectors.collectingAndThen()
+//        Collectors.toMap()
         return personPositionDurationStream
                 .collect(groupingBy(
                         PersonPositionDuration::getPosition,
+                        // collectingAndThen ринимает коллектор и лямбду, коллектор отрабатывает, потом отрабаотывается лямбда
                         collectingAndThen(
+                                // сначала найдем максимального, а потом лямбдой вытащим человека с макс продолжит работы
+                                // p.get() - тянем optional
                                 maxBy(comparing(PersonPositionDuration::getDuration)), p -> p.get().getPerson())));
     }
 

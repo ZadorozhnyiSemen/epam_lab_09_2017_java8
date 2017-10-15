@@ -60,9 +60,8 @@ public class Optional<T> {
     public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) {
         if (isPresent()) {
             return value;
-        } else {
-            throw exceptionSupplier.get();
         }
+        throw exceptionSupplier.get();
     }
 
     public Optional<T> filter(Predicate<? super T> predicate) {
