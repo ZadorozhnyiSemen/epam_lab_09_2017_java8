@@ -5,10 +5,7 @@ import data.JobHistoryEntry;
 import data.Person;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CollectorsExercise1 {
@@ -45,6 +42,16 @@ public class CollectorsExercise1 {
     }
 
     private Map<String, Person> getCoolestByPosition(List<Employee> employees) {
+        return getEmployees().stream()
+                .flatMap(e -> e.getJobHistory().stream()
+                        .collect(Collectors.groupingBy(JobHistoryEntry::getPosition,
+                                Collectors.summingInt(JobHistoryEntry::getDuration)))
+                        .entrySet().stream()
+                        .map(pair -> new PersonPositionDuration(e.getPerson(), pair.getKey(), pair.getValue())))
+                .collect(Collectors.groupingBy(PersonPositionDuration::getPosition,
+                        Collectors.collectingAndThen(Collectors.maxBy(Comparator.comparing(PersonPositionDuration::getDuration)),
+                                elem -> elem.get().getPerson())));
+
         // First option
         // Collectors.maxBy
         // Collectors.collectingAndThen
@@ -53,8 +60,6 @@ public class CollectorsExercise1 {
         // Second option
         // Collectors.toMap
         // iterate twice: stream...collect(...).stream()...
-        // TODO
-        throw new UnsupportedOperationException();
     }
 
     @Test
@@ -161,5 +166,4 @@ public class CollectorsExercise1 {
                         ))
         );
     }
-
 }
