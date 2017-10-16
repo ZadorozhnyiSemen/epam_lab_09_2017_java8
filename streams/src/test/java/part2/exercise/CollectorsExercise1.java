@@ -5,7 +5,11 @@ import data.JobHistoryEntry;
 import data.Person;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CollectorsExercise1 {
 
@@ -33,17 +37,9 @@ public class CollectorsExercise1 {
         }
     }
 
-
-    // "epam" -> "Alex Ivanov 23, Semen Popugaev 25, Ivan Ivanov 33"
-    @Test
-    public void getEmployeesByEmployer() {
-        Map<String, String> result = null;
-
-    }
-
     @Test
     public void getTheCoolestOne() {
-        Map<String, Person> coolestByPosition = getCoolestByPosition(getEmployees());
+        final Map<String, Person> coolestByPosition = getCoolestByPosition(getEmployees());
 
         coolestByPosition.forEach((position, person) -> System.out.println(position + " -> " + person));
     }
@@ -59,6 +55,34 @@ public class CollectorsExercise1 {
         // iterate twice: stream...collect(...).stream()...
         // TODO
         throw new UnsupportedOperationException();
+    }
+
+    @Test
+    public void getEmployeesByEmployer() {
+        Map<String, String> result = getEmployees().stream()
+                .flatMap(e -> e.getJobHistory().stream()
+                        .map(JobHistoryEntry::getEmployer)
+                        .map(empl -> new EmployerPersonPair(empl, e.getPerson().toString())))
+                .collect(Collectors.groupingBy(EmployerPersonPair::getEmployer,
+                        Collectors.mapping(EmployerPersonPair::getPerson, Collectors.joining(", "))));
+    }
+
+    private static class EmployerPersonPair {
+        private final String person;
+        private final String employer;
+
+        public EmployerPersonPair(String employer, String person) {
+            this.employer = employer;
+            this.person = person;
+        }
+
+        public String getPerson() {
+            return person;
+        }
+
+        public String getEmployer() {
+            return employer;
+        }
     }
 
     private List<Employee> getEmployees() {
