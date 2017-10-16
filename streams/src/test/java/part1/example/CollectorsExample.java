@@ -25,8 +25,8 @@ public class CollectorsExample {
         Map<Boolean, List<Integer>> collect7 = range.boxed().collect(Collectors.partitioningBy(intValue -> intValue > 50)); // partitioningBy - маппинг в булеан
         Integer collect8 = range.boxed().collect(Collectors.summingInt(v -> v));
         IntSummaryStatistics intSummaryStatistics = range.boxed().collect(Collectors.summarizingInt(v -> v));
-        Stream.of("a","b","c").collect(Collectors.joining()); // можно склеивать стримы стрингов
-        Stream.of("a","b","c").collect(Collectors.joining(" ")); // можно склеивать стримы стрингов
-        Stream.of("a","b","c").collect(Collectors.joining(" ", "->", "<-")); // можно склеивать стримы стрингов
+        String collect9 = Stream.of("a","b","c").collect(Collectors.joining()); // можно склеивать стримы стрингов
+        String collect10 = Stream.of("a","b","c").collect(Collectors.joining(" ")); // можно склеивать стримы стрингов
+        String collect11 = Stream.of("a","b","c").collect(Collectors.joining(" ", "->", "<-")); // можно склеивать стримы стрингов
     }
 }
