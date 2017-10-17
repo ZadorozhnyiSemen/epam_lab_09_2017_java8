@@ -223,6 +223,36 @@ public class Mapping {
         }
     }
 
+
+    private static class LazyFlatMapHelper3<T, R> {
+
+        private final List<T> list;
+        private final Function<T, List<R>> mapper;
+
+        private LazyFlatMapHelper3(List<T> list, Function<T, List<R>> mapper) {
+            this.list = list;
+            this.mapper = mapper;
+        }
+
+        public static <T> LazyFlatMapHelper3<T, T> from(List<T> list) {
+            return new LazyFlatMapHelper3<>(list, Collections::singletonList);
+        }
+
+        public <U> LazyFlatMapHelper3<T, U> flatMap(Function<R, List<U>> remapper) {
+            return new LazyFlatMapHelper3<>(list, mapper.andThen(result -> force(result, remapper)));
+        }
+
+        public List<R> force() {
+            return force(list, mapper);
+        }
+
+        private <A, B> List<B> force(List<A> list, Function<A, List<B>> mapper) {
+            List<B> result = new ArrayList<>(list.size());
+            list.forEach(element -> result.addAll(mapper.apply(element)));
+            return result;
+        }
+    }
+
     @Test
     public void lazyFlatMapping() {
         List<Employee> employees = Arrays.asList(
@@ -257,6 +287,13 @@ public class Mapping {
                         .mapToObj(value -> (char) value)
                         .collect(Collectors.toList()))
                 .force();
+        List<Character> force2 = LazyFlatMapHelper2.from(employees)
+                .flatMap(Employee::getJobHistory)
+                .flatMap(entry -> entry.getEmployer().chars()
+                        .mapToObj(value -> (char) value)
+                        .collect(Collectors.toList()))
+                .force();
         assertEquals(force1.size(), force.size());
+        assertEquals(force2.size(), force.size());
     }
 }
