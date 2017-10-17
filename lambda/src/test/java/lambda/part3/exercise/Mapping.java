@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -177,17 +178,50 @@ public class Mapping {
         }
 
         public static <T> LazyFlatMapHelper<T, T> from(List<T> list) {
-            return new LazyFlatMapHelper<>(list, (lst, consumer) -> lst.forEach(elem -> consumer.accept(elem)));
+            //return new LazyFlatMapHelper<>(list, (lst, consumer) -> lst.forEach(elem -> consumer.accept(elem)));
+            return new LazyFlatMapHelper<>(list, Iterable::forEach);
         }
 
         public List<R> force() {
             List<R> result = new ArrayList<>(list.size());
-            biCons.accept(list, el -> result.add(el));
+            biCons.accept(list, result::add);
             return result;
         }
 
         public <R2> LazyFlatMapHelper<T, R2> flatMap(Function<R, List<R2>> f) {
-            return new LazyFlatMapHelper<>(list, (lst, consumer) -> biCons.accept(lst, el -> f.apply(el)));
+            //return new LazyFlatMapHelper<>(list, (lst, consumer) -> biCons.accept(lst, el -> f.apply(el).forEach((x) -> consumer.accept(x))));
+            return new LazyFlatMapHelper<>(list, (lst, consumer) -> biCons.accept(lst, el -> f.apply(el).forEach(consumer)));
         }
+    }
+
+    @Test
+    public void lazyFlatMapping() {
+        List<Employee> employees = Arrays.asList(
+                new Employee(
+                        new Person("a", "Galt", 30),
+                        Arrays.asList(
+                                new JobHistoryEntry(2, "dev", "epam"),
+                                new JobHistoryEntry(1, "dev", "google")
+                        )),
+                new Employee(
+                        new Person("b", "Doe", 40),
+                        Arrays.asList(
+                                new JobHistoryEntry(3, "qa", "yandex"),
+                                new JobHistoryEntry(1, "qa", "epam"),
+                                new JobHistoryEntry(1, "dev", "abc")
+                        )),
+                new Employee(
+                        new Person("c", "White", 50),
+                        Collections.singletonList(
+                                new JobHistoryEntry(5, "qa", "epam")
+                        ))
+        );
+        List<Character> force = LazyFlatMapHelper.from(employees)
+                .flatMap(Employee::getJobHistory)
+                .flatMap(entry -> entry.getEmployer().chars()
+                        .mapToObj(value -> (char) value)
+                        .collect(Collectors.toList()))
+                .force();
+        assertEquals(27, force.size());
     }
 }
