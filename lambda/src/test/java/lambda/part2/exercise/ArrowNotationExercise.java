@@ -25,13 +25,25 @@ public class ArrowNotationExercise {
         assertEquals(true, compareAges.test(new Person("a", "b", 22), new Person("c", "d", 22)));
     }
 
+    // getFullName: Person -> String
+    private String getFullName(Person person) {
+        return person.getFirstName() + " " + person.getLastName();
+    }
+
+    // ageOfPersonWithTheLongestFullName: (Person -> String) -> ((Person, Person) -> int)
+    private BiFunction<Person, Person, Integer> ageOfPersonWithTheLongestFullName(Function<Person, String> func) {
+        return (o1, o2) -> func.apply(o1).length() > func.apply(o2).length() ? o1.getAge() : o2.getAge();
+    }
+
     @Test
     public void getAgeOfPersonWithTheLongestFullName() {
         // getFullName: Person -> String
-        final Function<Person, String> getFullName = o -> o.getFirstName() + " " + o.getLastName();
+        // решение без использования методов выше: o -> o.getFirstName() + " " + o.getLastName();
+        final Function<Person, String> getFullName = this::getFullName;
         // ageOfPersonWithTheLongestFullName: (Person -> String) -> (Person, Person) -> Integer
-        final BiFunction<Person, Person, Integer> ageOfPersonWithTheLongestFullName =
-                (o1, o2) -> getFullName.apply(o1).length() > getFullName.apply(o2).length() ? o1.getAge() : o2.getAge();
+        // решение без использования методов выше:
+        // (o1, o2) -> getFullName.apply(o1).length() > getFullName.apply(o2).length() ? o1.getAge() : o2.getAge();
+        final BiFunction<Person, Person, Integer> ageOfPersonWithTheLongestFullName = ageOfPersonWithTheLongestFullName(getFullName);
         assertEquals(
                 Integer.valueOf(1),
                 ageOfPersonWithTheLongestFullName.apply(
