@@ -2,6 +2,8 @@ package optional;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
@@ -53,12 +55,29 @@ public class OptionalExample {
 
     @Test
     public void flatMap() {
-        throw new UnsupportedOperationException("Not implemented");
+        Optional<String> optional= getOptional();
+
+        Function<? super String, Optional<List<Character>>> function = s -> {
+            char[] chars = s.toCharArray();
+            Optional<List<Character>> characters = Optional.of(new ArrayList<Character>());
+            for (char c : chars) {
+                characters.get().add(c);
+            }
+            return characters;
+        };
+        Optional<List<Character>> expected = optional.flatMap(function);
+        Optional<List<Character>> actual;
+        if (optional.isPresent()) {
+            actual = function.apply(optional.get());
+        } else {
+            actual = Optional.empty();
+        }
+        assertEquals(expected, actual);
     }
 
     @Test
     public void filter() {
-        throw new UnsupportedOperationException("Not implemented");
+
     }
 
     private Optional<String> getOptional() {
