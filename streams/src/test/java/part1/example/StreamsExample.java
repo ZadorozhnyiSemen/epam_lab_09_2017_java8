@@ -20,15 +20,15 @@ public class StreamsExample {
 
     @Test
     public void checkJohnsLastNames() {
-        String[] johnsLastNames = getEmployees().stream()
+        List<String> johnsLastNames = getEmployees().stream()
                 .map(Employee::getPerson)
                 .filter(e -> e.getFirstName().equals("John"))
                 .map(Person::getLastName)
                 .distinct()
-                .toArray(String[]::new);
-//                                                    .collect(Collectors.toList());
+//              .toArray(String[]::new);
+                .collect(Collectors.toList());
 
-        assertEquals(Collections.singletonList("Galt"), johnsLastNames);
+        assertEquals(Arrays.asList("Galt", "Doe", "White"), johnsLastNames);
     }
 
     @Test
