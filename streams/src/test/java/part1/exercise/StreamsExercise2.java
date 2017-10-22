@@ -6,6 +6,7 @@ import data.Person;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,6 +34,24 @@ public class StreamsExercise2 {
 
         public String getPosition() {
             return position;
+        }
+    }
+
+    private static class EmployerPersonPair {
+        private final String employer;
+        private final Person person;
+
+        public EmployerPersonPair(String employer, Person person) {
+            this.employer = employer;
+            this.person = person;
+        }
+
+        public String getEmployer() {
+            return employer;
+        }
+
+        public Person getPerson() {
+            return person;
         }
     }
 
@@ -110,7 +129,12 @@ public class StreamsExercise2 {
     @Test
     public void employersStuffList() {
         List<Employee> employees = getEmployees();
-        Map<String, Set<Person>> result = null; // TODO
+        Map<String, Set<Person>> result = employees.stream()
+                .flatMap(employee -> employee.getJobHistory().stream()
+                        .map(JobHistoryEntry::getEmployer)
+                        .map(employer -> new EmployerPersonPair(employer, employee.getPerson())))
+                .collect(Collectors.groupingBy(EmployerPersonPair::getEmployer,
+                         Collectors.mapping(EmployerPersonPair::getPerson, Collectors.toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("epam", new HashSet<>(Arrays.asList(
@@ -191,8 +215,11 @@ public class StreamsExercise2 {
      */
     @Test
     public void indexByFirstEmployer() {
-        Map<String, Set<Person>> result = null; // TODO
-
+        Map<String, Set<Person>> result = getEmployees().stream()
+                .flatMap(employee -> employee.getJobHistory().stream().limit(1)
+                            .map(jobHistoryEntry -> new EmployerPersonPair(jobHistoryEntry.getEmployer(), employee.getPerson())))
+                .collect(Collectors.groupingBy(EmployerPersonPair::getEmployer,
+                         Collectors.mapping(EmployerPersonPair::getPerson, Collectors.toSet())));
 
         Map<String, Set<Person>> expected = new HashMap<>();
         expected.put("epam", new HashSet<>(Arrays.asList(
