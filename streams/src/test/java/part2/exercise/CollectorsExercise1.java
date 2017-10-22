@@ -6,6 +6,7 @@ import data.Person;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CollectorsExercise1 {
 
@@ -33,12 +34,35 @@ public class CollectorsExercise1 {
         }
     }
 
+    private static class EmployerPersonPair {
+        private final String person;
+        private final String employer;
+
+        public EmployerPersonPair(String employer, String person) {
+            this.employer = employer;
+            this.person = person;
+        }
+
+        public String getPerson() {
+            return person;
+        }
+
+        public String getEmployer() {
+            return employer;
+        }
+    }
 
     // "epam" -> "Alex Ivanov 23, Semen Popugaev 25, Ivan Ivanov 33"
     @Test
     public void getEmployeesByEmployer() {
-        Map<String, String> result = null;
+        Map<String, String> result = getEmployees().stream()
+            .flatMap(employee -> employee.getJobHistory().stream()
+                    .map(JobHistoryEntry::getEmployer)
+                    .map(s -> new EmployerPersonPair(s, employee.getPerson().toString())))
+                .collect(Collectors.groupingBy(EmployerPersonPair::getEmployer,
+                                                Collectors.mapping(EmployerPersonPair::getPerson, Collectors.joining(", "))));
 
+        System.out.println(result);
     }
 
     @Test
