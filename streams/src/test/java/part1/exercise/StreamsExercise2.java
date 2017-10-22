@@ -281,7 +281,7 @@ public class StreamsExercise2 {
                                                                                 , stringIntegerEntry.getValue())))
                 .collect(Collectors.groupingBy(EmployerPersonDuration::getEmployer,
                                                 Collectors.collectingAndThen(Collectors.maxBy(Comparator.comparing(EmployerPersonDuration::getDuration)),
-                                                        employerPersonDuration -> employerPersonDuration.get().getPerson())));// TODO
+                                                        employerPersonDuration -> employerPersonDuration.get().getPerson())));
 
         Map<String, Person> expected = new HashMap<>();
         expected.put("epam", new Person("John", "White", 28));
