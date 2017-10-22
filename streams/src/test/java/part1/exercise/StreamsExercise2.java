@@ -271,7 +271,17 @@ public class StreamsExercise2 {
      */
     @Test
     public void greatestExperiencePerEmployer() {
-        Map<String, Person> result = null;// TODO
+        Map<String, Person> result = getEmployees().stream()
+                .flatMap(employee -> employee.getJobHistory().stream()
+                        .collect(Collectors.groupingBy(JobHistoryEntry::getEmployer, Collectors.summingInt(JobHistoryEntry::getDuration)))
+                        .entrySet()
+                        .stream()
+                        .map(stringIntegerEntry -> new EmployerPersonDuration(stringIntegerEntry.getKey()
+                                                                                , employee.getPerson()
+                                                                                , stringIntegerEntry.getValue())))
+                .collect(Collectors.groupingBy(EmployerPersonDuration::getEmployer,
+                                                Collectors.collectingAndThen(Collectors.maxBy(Comparator.comparing(EmployerPersonDuration::getDuration)),
+                                                        employerPersonDuration -> employerPersonDuration.get().getPerson())));// TODO
 
         Map<String, Person> expected = new HashMap<>();
         expected.put("epam", new Person("John", "White", 28));
