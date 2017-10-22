@@ -18,6 +18,48 @@ import static org.junit.Assert.assertEquals;
  */
 public class StreamsExercise2 {
 
+    private static class PersonPositionPair {
+        private final Person person;
+        private final String position;
+
+        public PersonPositionPair(Person person, String position) {
+            this.person = person;
+            this.position = position;
+        }
+
+        public Person getPerson() {
+            return person;
+        }
+
+        public String getPosition() {
+            return position;
+        }
+    }
+
+    private static class PersonPositionDuration {
+        private final Person person;
+        private final String position;
+        private final int duration;
+
+        public PersonPositionDuration(Person person, String position, int duration) {
+            this.person = person;
+            this.position = position;
+            this.duration = duration;
+        }
+
+        public Person getPerson() {
+            return person;
+        }
+
+        public String getPosition() {
+            return position;
+        }
+
+        public int getDuration() {
+            return duration;
+        }
+    }
+
     /**
      * Преобразовать список сотрудников в отображение [компания -> множество людей, когда-либо работавших в этой компании].
      *
