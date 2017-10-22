@@ -1,20 +1,39 @@
 package part1.exercise;
 
+import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
 
 public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
     private final int[][] array;
+    private final long endExclusive;
+    private long startInclusive;
 
     public RectangleSpliterator(int[][] array) {
-        super(checkArrayAndCalcEstimatedSize(array), 0);       // TODO заменить
+        this(array, 0, checkArrayAndCalcEstimatedSize(array));
+    }
+
+/*    public RectangleSpliterator(int[][] array) {
+        super(checkArrayAndCalcEstimatedSize(array), 0);
 //       super(estimatedSize, Spliterator.IMMUTABLE
 //                          | Spliterator.ORDERED
 //                          | Spliterator.SIZED
 //                          | Spliterator.SUBSIZED
 //                          | Spliterator.NONNULL);
         this.array = array;
+    }*/
+
+    public RectangleSpliterator(int[][] array, long startInclusive, long endExclusive) {
+        super(endExclusive - startInclusive,
+                Spliterator.IMMUTABLE |
+                        Spliterator.ORDERED |
+                        Spliterator.SIZED |
+                        Spliterator.SUBSIZED |
+                        Spliterator.NONNULL);
+        this.array = array;
+        this.startInclusive = startInclusive;
+        this.endExclusive = endExclusive;
     }
 
     private static long checkArrayAndCalcEstimatedSize(int[][] array) {
@@ -42,31 +61,4 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
     }
 
 
-}
-
-
-class A {
-
-    protected String val;
-
-    A() {
-        setVal();
-    }
-
-    public void setVal() {
-        val = "A";
-    }
-}
-
-class B extends A {
-
-    @Override
-    public void setVal() {
-        val = "B";
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new B().val);
-
-    }
 }
