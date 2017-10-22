@@ -65,8 +65,10 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
     @Override
     public boolean tryAdvance(IntConsumer action) {
-        // TODO
-        throw new UnsupportedOperationException();
+        if (startInclusive < endExclusive) {
+
+        }
+        return false;
     }
 
 
