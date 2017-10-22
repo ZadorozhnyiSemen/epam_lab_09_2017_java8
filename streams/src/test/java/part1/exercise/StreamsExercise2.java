@@ -79,6 +79,30 @@ public class StreamsExercise2 {
         }
     }
 
+    private static class EmployerPersonDuration {
+        private final String employer;
+        private final Person person;
+        private final int duration;
+
+        public EmployerPersonDuration(String employer, Person person, int duration) {
+            this.employer = employer;
+            this.person = person;
+            this.duration = duration;
+        }
+
+        public int getDuration() {
+            return duration;
+        }
+
+        public String getEmployer() {
+            return employer;
+        }
+
+        public Person getPerson() {
+            return person;
+        }
+    }
+
     /**
      * Преобразовать список сотрудников в отображение [компания -> множество людей, когда-либо работавших в этой компании].
      *
