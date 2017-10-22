@@ -66,10 +66,15 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
     @Override
     public boolean tryAdvance(IntConsumer action) {
         if (startInclusive < endExclusive) {
-
+            int value = array[convertToInt(startInclusive / array[0].length)][convertToInt(startInclusive % array[0].length)];
+            startInclusive += 1;
+            action.accept(value);
+            return true;
         }
         return false;
     }
 
-
+    private int convertToInt (long toConvert) {
+        return Math.toIntExact(toConvert);
+    }
 }
