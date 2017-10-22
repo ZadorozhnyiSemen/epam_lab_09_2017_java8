@@ -77,12 +77,20 @@ public class CollectorsExercise1 {
         // Collectors.maxBy
         // Collectors.collectingAndThen
         // Collectors.groupingBy
-
+        return employees.stream()
+                .flatMap(employee -> employee.getJobHistory().stream()
+                        .collect(Collectors.groupingBy(JobHistoryEntry::getPosition
+                        ,Collectors.summingInt(JobHistoryEntry::getDuration)))
+                .entrySet().stream()
+                        .map(stringIntegerEntry -> new PersonPositionDuration(employee.getPerson(),
+                                                                        stringIntegerEntry.getKey(),
+                                                                        stringIntegerEntry.getValue())))
+                .collect(Collectors.groupingBy(PersonPositionDuration::getPosition,
+                        Collectors.collectingAndThen(Collectors.maxBy(Comparator.comparingInt(PersonPositionDuration::getDuration)),
+                                personPositionDuration -> personPositionDuration.get().getPerson())));
         // Second option
         // Collectors.toMap
         // iterate twice: stream...collect(...).stream()...
-        // TODO
-        throw new UnsupportedOperationException();
     }
 
     private List<Employee> getEmployees() {
