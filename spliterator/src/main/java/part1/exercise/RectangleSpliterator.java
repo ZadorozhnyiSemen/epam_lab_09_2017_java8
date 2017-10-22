@@ -46,8 +46,16 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
     @Override
     public OfInt trySplit() {
-        // TODO
-        throw new UnsupportedOperationException();
+        long length = endExclusive - startInclusive;
+        long midPoint = startInclusive + length/2;
+
+        if (length < 2) {
+            return null;
+        }
+
+        RectangleSpliterator result = new RectangleSpliterator(array, startInclusive, midPoint);
+        startInclusive = midPoint;
+        return result;
     }
 
     @Override
