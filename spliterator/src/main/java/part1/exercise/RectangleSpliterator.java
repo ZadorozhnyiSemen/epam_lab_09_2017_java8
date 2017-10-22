@@ -1,5 +1,6 @@
 package part1.exercise;
 
+import java.util.Arrays;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
@@ -37,8 +38,9 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
     }
 
     private static long checkArrayAndCalcEstimatedSize(int[][] array) {
-        // TODO
-
+        if (Arrays.stream(array).anyMatch(ints -> ints.length != array[0].length)) {
+            throw new RuntimeException("Array not rectangle");
+        }
         return array.length * array[0].length;
     }
 
@@ -50,8 +52,7 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
     @Override
     public long estimateSize() {
-        // TODO
-        throw new UnsupportedOperationException();
+        return endExclusive - startInclusive;
     }
 
     @Override
