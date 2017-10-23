@@ -71,20 +71,17 @@ public class CompletableFutureBasics {
 
     @Test
     public void createEmpty() throws ExecutionException, InterruptedException {
-        // TODO Create empty Optional
-        Optional<Person> optPerson = null;
+        Optional<Person> optPerson = Optional.empty();
 
         assertFalse(optPerson.isPresent());
 
-        // TODO Create empty stream
-        Stream<Person> streamPerson = null;
+        Stream<Person> streamPerson = Stream.empty();
 
         List<Person> persons = streamPerson.collect(toList());
         assertThat(persons.size(), is(0));
 
-        // TODO Complete CompletableFuture with NoSuchElementException
-        CompletableFuture<Person> futurePerson = null;
-        // futurePerson.???
+        CompletableFuture<Person> futurePerson = new CompletableFuture<>();
+        futurePerson.completeExceptionally(new NoSuchElementException());
 
         assertTrue(futurePerson.isCompletedExceptionally());
         assertTrue(futurePerson
