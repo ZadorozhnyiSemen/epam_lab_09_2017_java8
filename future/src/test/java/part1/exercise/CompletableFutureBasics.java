@@ -93,28 +93,25 @@ public class CompletableFutureBasics {
     public void forEach() throws ExecutionException, InterruptedException {
         Person person = new Person("John", "Galt", 33);
 
-        // TODO Create non empty Optional
-        Optional<Person> optPerson = null;
+        Optional<Person> optPerson = Optional.of(person);
 
         CompletableFuture<Person> result1 = new CompletableFuture<>();
 
-        // TODO using optPerson.ifPresent complete result1
+        optPerson.ifPresent(result1::complete);
         assertEquals(person, result1.get());
 
-        // TODO Create stream with a single element
-        Stream<Person> streamPerson = null;
+        Stream<Person> streamPerson = Stream.of(person);
 
         CompletableFuture<Person> result2 = new CompletableFuture<>();
 
-        // TODO Using streamPerson.forEach complete result2
+        streamPerson.forEach(result2::complete);
         assertEquals(person, result2.get());
 
-        // TODO Create completed CompletableFuture
-        CompletableFuture<Person> futurePerson = null;
+        CompletableFuture<Person> futurePerson = CompletableFuture.completedFuture(person);
 
         CompletableFuture<Person> result3 = new CompletableFuture<>();
 
-        // TODO Using futurePerson.thenAccept complete result3
+        futurePerson.thenAccept(result3::complete);
         assertEquals(person, result3.get());
     }
 
