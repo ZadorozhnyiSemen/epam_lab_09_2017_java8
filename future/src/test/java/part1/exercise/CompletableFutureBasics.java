@@ -52,21 +52,18 @@ public class CompletableFutureBasics {
     public void createNonEmpty() throws ExecutionException, InterruptedException {
         Person person = new Person("John", "Galt", 33);
 
-        // TODO Create non empty Optional
-        Optional<Person> optPerson = null;
+        Optional<Person> optPerson = Optional.of(person);
 
         assertTrue(optPerson.isPresent());
         assertEquals(person, optPerson.get());
 
-        // TODO Create stream with a single element
-        Stream<Person> streamPerson = null;
+        Stream<Person> streamPerson = Stream.of(person);
 
         List<Person> persons = streamPerson.collect(toList());
         assertThat(persons.size(), is(1));
         assertEquals(person, persons.get(0));
 
-        // TODO Create completed CompletableFuture
-        CompletableFuture<Person> futurePerson = null;
+        CompletableFuture<Person> futurePerson = CompletableFuture.completedFuture(person);
 
         assertTrue(futurePerson.isDone());
         assertEquals(person, futurePerson.get());
