@@ -119,28 +119,16 @@ public class CompletableFutureBasics {
     public void map() throws ExecutionException, InterruptedException {
         Person person = new Person("John", "Galt", 33);
 
-        // TODO Create non empty Optional
-        Optional<Person> optPerson = null;
-
-        // TODO get Optional<first name> from optPerson
-        Optional<String> optFirstName = null;
-
+        Optional<Person> optPerson = Optional.of(person);
+        Optional<String> optFirstName = optPerson.map(Person::getFirstName);
         assertEquals(person.getFirstName(), optFirstName.get());
 
-        // TODO Create stream with a single element
-        Stream<Person> streamPerson = null;
-
-        // TODO Get Stream<first name> from streamPerson
-        Stream<String> streamFirstName = null;
-
+        Stream<Person> streamPerson = Stream.of(person);
+        Stream<String> streamFirstName = streamPerson.map(Person::getFirstName);
         assertEquals(person.getFirstName(), streamFirstName.collect(toList()).get(0));
 
-        // TODO Create completed CompletableFuture
-        CompletableFuture<Person> futurePerson = null;
-
-        // TODO Get CompletableFuture<first name> from futurePerson
-        CompletableFuture<String> futureFirstName = null;
-
+        CompletableFuture<Person> futurePerson = CompletableFuture.completedFuture(person);
+        CompletableFuture<String> futureFirstName = futurePerson.thenApply(Person::getFirstName);
         assertEquals(person.getFirstName(), futureFirstName.get());
     }
 
