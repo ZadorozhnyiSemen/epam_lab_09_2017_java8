@@ -55,7 +55,6 @@ public class ZipWithIndexDoubleSpliterator extends Spliterators.AbstractSplitera
 
     @Override
     public long estimateSize() {
-        // TODO
-        throw new UnsupportedOperationException();
+        return inner.estimateSize();
     }
 }
