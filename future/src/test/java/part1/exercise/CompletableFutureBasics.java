@@ -136,30 +136,19 @@ public class CompletableFutureBasics {
     public void flatMap() throws ExecutionException, InterruptedException {
         Person person = employeeDb.get(keys.get(0)).thenApply(Employee::getPerson).get();
 
-        // TODO Create non empty Optional
-        Optional<Person> optPerson = null;
 
-        // TODO Using flatMap and .getFirstName().codePoints().mapToObj(p -> p).findFirst()
-        // TODO get the first letter of first name if any
-        Optional<Integer> optFirstCodePointOfFirstName = null;
-
+        Optional<Person> optPerson = Optional.of(person);
+        Optional<Integer> optFirstCodePointOfFirstName = optPerson.flatMap(person1 ->
+                person.getFirstName().codePoints().boxed().findFirst());
         assertEquals(Integer.valueOf(65), optFirstCodePointOfFirstName.get());
 
-        // TODO Create stream with a single element
-        Stream<Person> streamPerson = null;
-
-        // TODO Using flatMapToInt and .getFirstName().codePoints() get codepoints stream from streamPerson
-        IntStream codePoints = null;
-
+        Stream<Person> streamPerson = Stream.of(person);
+        IntStream codePoints = streamPerson.flatMapToInt(person1 -> person.getFirstName().codePoints());
         int[] codePointsArray = codePoints.toArray();
         assertEquals(person.getFirstName(), new String(codePointsArray, 0, codePointsArray.length));
 
-        // TODO Create completed CompletableFuture
-        CompletableFuture<Person> futurePerson = null;
-
-        // TODO Get CompletableFuture<Employee> from futurePerson using getKeyByPerson and employeeDb
-        CompletableFuture<Employee> futureEmployee = null;
-
+        CompletableFuture<Person> futurePerson = CompletableFuture.completedFuture(person);
+        CompletableFuture<Employee> futureEmployee = futurePerson.thenCompose(person1 -> employeeDb.get(getKeyByPerson(person1)));
         assertEquals(person, futureEmployee.thenApply(Employee::getPerson).get());
     }
 }
